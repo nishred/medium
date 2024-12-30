@@ -5,6 +5,8 @@ import { Context } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 
+import { cors } from "hono/cors";
+
 const app = new Hono<{
   Bindings: {
     DATABASE_URL: string;
@@ -19,6 +21,8 @@ const app = new Hono<{
 // const prisma = new PrismaClient({
 //   datasourceUrl: env.DATABASE_URL,
 // }).$extends(withAccelerate());
+
+app.use("/api/*", cors());
 
 app.route("/api", apiRouter);
 

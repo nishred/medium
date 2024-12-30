@@ -28,6 +28,7 @@ const signUp = async (ctx: Context) => {
     const jwt = await sign(
       {
         id: user.id,
+        exp: Math.ceil(Date.now() / 1000) + 60 * 60,
       },
       ctx.env.JWT_SECRET
     );
@@ -35,6 +36,11 @@ const signUp = async (ctx: Context) => {
     return ctx.json({
       message: "user created successfully",
       data: {
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        },
         token: jwt,
       },
     });
@@ -76,6 +82,7 @@ const signIn = async (ctx: Context) => {
     const token = await sign(
       {
         id: user.id,
+        exp: Math.ceil(Date.now() / 1000) + 60 * 60,
       },
       ctx.env.JWT_SECRET
     );
@@ -84,6 +91,11 @@ const signIn = async (ctx: Context) => {
       message: "Sign in successfull",
       data: {
         token,
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        },
       },
     });
   } catch (err: any) {

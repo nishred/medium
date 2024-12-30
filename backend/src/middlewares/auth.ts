@@ -13,13 +13,16 @@ const auth = async (ctx: Context, next: Next) => {
     ? ctx.req.header("Authorization")?.split(" ")[1]
     : null;
 
-  if (!token)
-    return ctx.json({
-      error: "Please login",
-    });
-
   try {
+    if (!token) throw new Error("Please login");
+
     const decodedPayload = await verify(token, ctx.env.JWT_SECRET);
+
+    const exp = decodedPayload.exp;
+
+    const seconds = (exp as number) - Math.ceil(Date.now() / 1000);
+
+    if (seconds <= 0) throw new Error("Please login again");
 
     const userId: string = decodedPayload.id as string;
 
@@ -35,6 +38,7 @@ const auth = async (ctx: Context, next: Next) => {
 
     await next();
   } catch (err) {
+    ctx.status(400);
     return ctx.json({
       error: err instanceof Error ? err.message : "Unknown error",
     });

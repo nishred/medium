@@ -22,4 +22,3 @@ export {
   updateBlogInput,
   UpdateBlogInput,
 };
-

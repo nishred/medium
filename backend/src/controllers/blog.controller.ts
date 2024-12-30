@@ -76,16 +76,24 @@ const fetchBlogs = async (ctx: Context) => {
   }).$extends(withAccelerate());
 
   try {
-    const blogs = await prisma.post.findMany({});
-
-    const headings = blogs.map((blog) => {
-      return blog.title;
+    const blogs = await prisma.post.findMany({
+      orderBy: {
+        title: "asc",
+      },
+      include: {
+        author: {
+          select: {
+            name: true,
+          },
+        },
+      },
     });
 
     return ctx.json({
       success: true,
-      message: "Blogs fetched successfully",
-      data: { blogs: headings },
+      data: {
+        blogs,
+      },
     });
   } catch (err) {
     ctx.status(400);
