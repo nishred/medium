@@ -12,6 +12,12 @@ const createBlog = async (ctx: Context) => {
 
   const body = await ctx.req.json();
 
+  const authorId = ctx.get("userId");
+
+  console.log("body", body);
+
+  console.log("Author Id", authorId);
+
   try {
     const parsedBody = createBlogInput.parse(body);
 
@@ -19,7 +25,7 @@ const createBlog = async (ctx: Context) => {
       data: {
         ...parsedBody,
         author: {
-          connect: { id: ctx.req.user?.id ?? "" },
+          connect: { id: ctx.get("userId") },
         },
       },
     });
@@ -48,6 +54,14 @@ const fetchBlog = async (ctx: Context) => {
     const blog = await prisma.post.findUnique({
       where: {
         id: ctx.req.param("id"),
+      },
+
+      include: {
+        author: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 

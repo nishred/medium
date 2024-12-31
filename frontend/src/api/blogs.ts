@@ -15,4 +15,47 @@ async function fetchBlogs(token: string | null) {
   return blogs;
 }
 
-export { fetchBlogs };
+async function fetchBlog(id, token) {
+  const response = await axios.get(`${BACKEND_URL}/api/v1/blog/${id}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const blog = response.data.data.blog;
+
+  return blog;
+}
+
+async function createBlog(
+  {
+    title,
+    content,
+    published,
+  }: {
+    title: string;
+    content: string;
+    published: boolean;
+  },
+  token: string
+) {
+  const response = await axios.post(
+    `${BACKEND_URL}/api/v1/blog`,
+    {
+      title,
+      content,
+      published,
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data.data;
+}
+
+export { fetchBlogs, fetchBlog, createBlog };

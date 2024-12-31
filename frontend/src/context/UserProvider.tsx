@@ -1,10 +1,10 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BACKEND_URL } from "../utils/constants";
-import toast from "react-hot-toast";
+import Loading from "../components/Loading";
 
 type UserType = {
   name: string;
@@ -22,7 +22,7 @@ export const UserContext = createContext<UserContextInterface | undefined>(
   undefined
 );
 
-const UserProvider = ({ children }) => {
+const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserType>({
     name: "",
     email: "",
@@ -59,9 +59,6 @@ const UserProvider = ({ children }) => {
 
         navigate("/blogs");
       } catch (err) {
-        toast.error(
-          err instanceof Error ? err.message : "Something went wrong"
-        );
         navigate("/signup");
       } finally {
         setIsLoading(false);
@@ -96,7 +93,7 @@ const UserProvider = ({ children }) => {
     }
   }, [user.isAuthenticated]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Loading />;
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

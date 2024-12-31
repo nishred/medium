@@ -1,32 +1,33 @@
 import useBlogs from "../hooks/useBlogs";
 
-import AppBar from "../components/AppBar";
 import BlogCard from "../components/BlogCard";
+import BlogsSkeleton from "../components/BlogsSkeleton";
+import AppBar from "../components/AppBar";
 
 const Blogs = () => {
   const { blogs, isLoading, isError, error } = useBlogs();
 
-  if (isLoading) return <div>loading..</div>;
-
-  if (isError) return <div>{error.message}</div>;
-
+  if (isError) return <div>{error?.message || "Something went wrong"}</div>;
 
   return (
     <div>
-      <AppBar />
+      <AppBar publishPage={false} />
 
       <div className="flex flex-col gap-8 py-4">
-        {blogs.map((blog) => {
-          return (
-            <BlogCard
-              key={blog.id}
-              title={blog.title}
-              content={blog.content}
-              createdAt={blog.createdAt}
-              username={blog.author.name}
-            />
-          );
-        })}
+        {!isLoading &&
+          blogs.map((blog) => {
+            return (
+              <BlogCard
+                key={blog.id}
+                id={blog.id}
+                title={blog.title}
+                content={blog.content}
+                createdAt={blog.createdAt}
+                username={blog.author.name}
+              />
+            );
+          })}
+        {isLoading && <BlogsSkeleton />}
       </div>
     </div>
   );

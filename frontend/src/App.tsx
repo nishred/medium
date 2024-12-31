@@ -11,6 +11,8 @@ import Protected from "./components/Protected";
 import { Toaster } from "react-hot-toast";
 import UserProvider from "./context/UserProvider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import Blog from "./pages/Blog";
+import Publish from "./pages/Publish";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +34,8 @@ function App() {
                 </Protected>
               }
             />
+            <Route path="/blog/:id" element={<Blog />} />
+            <Route path="/publish" element={<Publish />} />
           </Routes>
         </UserProvider>
       </BrowserRouter>
